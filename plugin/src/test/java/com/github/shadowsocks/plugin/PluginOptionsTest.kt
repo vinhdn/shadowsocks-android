@@ -18,8 +18,9 @@
  *                                                                             *
  *******************************************************************************/
 
-package com.github.shadowsocks.plugin
+package com.nowtoapps.bluevpn.plugin
 
+import com.com.nowtoapps.bluevpn.plugin.PluginOptions
 import org.junit.Assert
 import org.junit.Test
 

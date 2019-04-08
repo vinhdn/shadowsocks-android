@@ -1,47 +1,32 @@
 {
   "project_info": {
-    "project_number": "261400168171",
-    "firebase_url": "https://admob-app-id-3330146721.firebaseio.com",
-    "project_id": "admob-app-id-3330146721",
-    "storage_bucket": "admob-app-id-3330146721.appspot.com"
+    "project_number": "116086535063",
+    "firebase_url": "https://taxi-bk-ads.firebaseio.com",
+    "project_id": "taxi-bk-ads",
+    "storage_bucket": "taxi-bk-ads.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:261400168171:android:dbdd6331c434162f",
+        "mobilesdk_app_id": "1:116086535063:android:0ad2af12d993d658",
         "android_client_info": {
-          "package_name": "com.github.shadowsocks"
+          "package_name": "com.nowtoapps.bluevpn"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "261400168171-sfik8o3pj7e243583olorh7s5974vab1.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.github.shadowsocks",
-            "certificate_hash": "58a90f84cfe99d4280aec677c9a1292fae131677"
-          }
-        },
-        {
-          "client_id": "261400168171-g7aelv5bu012ojr7dod7lq09c9anjimh.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCee3fAad7nb3YsxeUO9mqqHFfAvsSCbVs"
+          "current_key": "AIzaSyDgIegFlDUFPwQgbfy5binbiCJ9-7DRPrg"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "116086535063-167dt4u8rqhm19kf7oqld2ejn9h8r8na.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

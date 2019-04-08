@@ -79,7 +79,7 @@
     <PreferenceCategory
             android:title="@string/plugin">
 
-        <com.github.shadowsocks.preference.IconListPreference
+        <com.nowtoapps.bluevpn.preference.IconListPreference
                 android:key="plugin"
                 android:persistent="false"
                 android:summary="%s"
@@ -95,8 +95,8 @@
                 android:key="udpFallback"
                 android:title="@string/udp_fallback"
                 android:summary="@string/plugin_disabled">
-            <intent android:targetPackage="com.github.shadowsocks"
-                    android:targetClass="com.github.shadowsocks.UdpFallbackProfileActivity"/>
+            <intent android:targetPackage="com.nowtoapps.bluevpn"
+                    android:targetClass="com.nowtoapps.bluevpn.UdpFallbackProfileActivity"/>
         </Preference>
 
     </PreferenceCategory>

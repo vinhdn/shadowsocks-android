@@ -18,7 +18,7 @@
  *                                                                             *
  *******************************************************************************/
 
-package com.github.shadowsocks.acl
+package com.nowtoapps.bluevpn.acl
 
 import org.junit.Assert
 import org.junit.Test

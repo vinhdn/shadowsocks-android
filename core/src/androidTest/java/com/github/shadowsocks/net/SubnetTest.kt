@@ -1,4 +1,4 @@
-package com.github.shadowsocks.net
+package com.nowtoapps.bluevpn.net
 
 import org.junit.Assert
 import org.junit.Test

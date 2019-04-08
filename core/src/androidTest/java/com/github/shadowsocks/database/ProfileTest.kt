@@ -18,7 +18,7 @@
  *                                                                             *
  *******************************************************************************/
 
-package com.github.shadowsocks.database
+package com.nowtoapps.bluevpn.database
 
 import androidx.core.net.toUri
 import org.junit.Assert

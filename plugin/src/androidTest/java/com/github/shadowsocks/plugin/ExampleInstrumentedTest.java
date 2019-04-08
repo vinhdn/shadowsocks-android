@@ -1,4 +1,4 @@
-package com.github.shadowsocks.plugin;
+package com.nowtoapps.bluevpn.plugin;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.github.shadowsocks.plugin.test", appContext.getPackageName());
+        assertEquals("com.nowtoapps.bluevpn.plugin.test", appContext.getPackageName());
     }
 }

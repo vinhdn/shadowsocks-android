@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.github.shadowsocks.core"
+          package="com.nowtoapps.bluevpn.core"
           android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -16,7 +16,7 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
-        android:backupAgent="com.github.shadowsocks.ConfigBackupHelper"
+        android:backupAgent="com.nowtoapps.bluevpn.ConfigBackupHelper"
         android:fullBackupContent="@xml/backup_descriptor"
         android:fullBackupOnly="true"
         android:label="@string/app_name"
@@ -30,7 +30,7 @@
                    android:value="AEdPqrEAAAAI_zVxZthz2HDuz9toTvkYvL0L5GA-OjeUIfBeXg"/>
 
         <service
-            android:name="com.github.shadowsocks.bg.VpnService"
+            android:name="com.nowtoapps.bluevpn.bg.VpnService"
             android:process=":bg"
             android:directBootAware="true"
             android:label="@string/app_name"
@@ -42,27 +42,27 @@
         </service>
 
         <service
-            android:name="com.github.shadowsocks.bg.TransproxyService"
+            android:name="com.nowtoapps.bluevpn.bg.TransproxyService"
             android:process=":bg"
             android:directBootAware="true"
             android:exported="false">
         </service>
 
         <service
-            android:name="com.github.shadowsocks.bg.ProxyService"
+            android:name="com.nowtoapps.bluevpn.bg.ProxyService"
             android:process=":bg"
             android:directBootAware="true"
             android:exported="false">
         </service>
 
         <activity
-            android:name="com.github.shadowsocks.VpnRequestActivity"
+            android:name="com.nowtoapps.bluevpn.VpnRequestActivity"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:excludeFromRecents="true"
             android:taskAffinity=""
             android:launchMode="singleTask"/>
 
-        <receiver android:name="com.github.shadowsocks.BootReceiver"
+        <receiver android:name="com.nowtoapps.bluevpn.BootReceiver"
                   android:process=":bg"
                   android:directBootAware="true"
                   android:enabled="false">
