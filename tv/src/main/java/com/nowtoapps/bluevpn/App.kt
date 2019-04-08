@@ -18,11 +18,10 @@
  *                                                                             *
  *******************************************************************************/
 
-package com.nowtoapps
+package com.nowtoapps.bluevpn
 
 import android.app.Application
 import android.content.res.Configuration
-import com.nowtoapps.bluevpn.Core
 
 class App : Application() {
     override fun onCreate() {

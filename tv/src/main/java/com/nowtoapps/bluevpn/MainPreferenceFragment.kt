@@ -18,7 +18,7 @@
  *                                                                             *
  *******************************************************************************/
 
-package com.nowtoapps
+package com.nowtoapps.bluevpn
 
 import android.app.Activity
 import android.app.backup.BackupManager
@@ -40,8 +40,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceDataStore
 import androidx.preference.SwitchPreference
 import com.crashlytics.android.Crashlytics
-import com.nowtoapps.bluevpn.BootReceiver
-import com.nowtoapps.bluevpn.Core
 import com.nowtoapps.bluevpn.aidl.IShadowsocksService
 import com.nowtoapps.bluevpn.aidl.ShadowsocksConnection
 import com.nowtoapps.bluevpn.aidl.TrafficStats

@@ -11,12 +11,12 @@
         android:required="true"/>
 
     <application
-        android:name="com.nowtoapps.App"
+        android:name="com.nowtoapps.bluevpn.App"
         android:theme="@style/Theme.Shadowsocks.TV"
         tools:ignore="MissingTvBanner"
         tools:replace="theme">
         <activity
-            android:name="com.nowtoapps.MainActivity"
+            android:name="com.nowtoapps.bluevpn.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask">
             <intent-filter>

@@ -18,7 +18,7 @@
  *                                                                             *
  *******************************************************************************/
 
-package com.nowtoapps
+package com.nowtoapps.bluevpn
 
 import android.os.Bundle
 import android.text.format.Formatter
@@ -29,7 +29,6 @@ import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.leanback.preference.LeanbackListPreferenceDialogFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.nowtoapps.bluevpn.Core
 import com.nowtoapps.bluevpn.database.ProfileManager
 import com.nowtoapps.bluevpn.plugin.PluginConfiguration
 import com.nowtoapps.bluevpn.preference.DataStore

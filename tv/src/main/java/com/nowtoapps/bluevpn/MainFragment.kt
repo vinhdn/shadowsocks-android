@@ -18,7 +18,7 @@
  *                                                                             *
  *******************************************************************************/
 
-package com.nowtoapps
+package com.nowtoapps.bluevpn
 
 import android.os.Bundle
 import android.view.View
