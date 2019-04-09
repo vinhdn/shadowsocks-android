@@ -57,21 +57,26 @@ object Key {
     const val method = "encMethod"
     const val remotePort = "remotePortNum"
     const val remoteDns = "remoteDns"
-
     const val plugin = "plugin"
+
     const val pluginConfigure = "plugin.configure"
     const val udpFallback = "udpFallback"
-
     const val dirty = "profileDirty"
 
     const val tfo = "tcp_fastopen"
-    const val assetUpdateTime = "assetUpdateTime"
 
+    const val assetUpdateTime = "assetUpdateTime"
     // TV specific values
     const val controlStats = "control.stats"
+
     const val controlImport = "control.import"
     const val controlExport = "control.export"
     const val about = "about"
+
+    //API
+    const val version = "version"
+    const val countryCode = "countryCode"
+    const val countryName = "countryName"
 }
 
 object Action {

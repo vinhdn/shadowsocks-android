@@ -22,10 +22,10 @@ package com.nowtoapps.bluevpn
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.*
-import android.nfc.NdefMessage
-import android.nfc.NdefRecord
-import android.nfc.NfcAdapter
+import android.content.ActivityNotFoundException
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
 import android.os.Bundle
 import android.text.format.Formatter
 import android.util.LongSparseArray
@@ -40,6 +40,9 @@ import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.nowtoapps.bluevpn.aidl.TrafficStats
 import com.nowtoapps.bluevpn.bg.BaseService
 import com.nowtoapps.bluevpn.database.Profile
@@ -51,9 +54,6 @@ import com.nowtoapps.bluevpn.utils.datas
 import com.nowtoapps.bluevpn.utils.printLog
 import com.nowtoapps.bluevpn.utils.readableMessage
 import com.nowtoapps.bluevpn.widget.UndoSnackbarManager
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
 import net.glxn.qrgen.android.QRCode
 
 class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
@@ -73,6 +73,7 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
      * Is ProfilesFragment editable at all.
      */
     private val isEnabled get() = (activity as MainActivity).state.let { it.canStop || it == BaseService.State.Stopped }
+
     private fun isProfileEditable(id: Long) =
             (activity as MainActivity).state == BaseService.State.Stopped || id !in Core.activeProfileIds
 
@@ -83,8 +84,6 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
         }
 
         private val url get() = arguments?.getString(KEY_URL)!!
-        private val nfcShareItem by lazy { url.toByteArray() }
-        private var adapter: NfcAdapter? = null
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             val image = ImageView(context)
@@ -92,22 +91,6 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
             val size = resources.getDimensionPixelSize(R.dimen.qr_code_size)
             image.setImageBitmap((QRCode.from(url).withSize(size, size) as QRCode).bitmap())
             return image
-        }
-
-        override fun onAttach(context: Context) {
-            super.onAttach(context)
-            val adapter = NfcAdapter.getDefaultAdapter(context)
-            adapter?.setNdefPushMessage(NdefMessage(arrayOf(
-                    NdefRecord(NdefRecord.TNF_ABSOLUTE_URI, nfcShareItem, byteArrayOf(), nfcShareItem))), activity)
-            this.adapter = adapter
-        }
-
-        override fun onDetach() {
-            super.onDetach()
-            val activity = activity
-            if (activity != null && !activity.isFinishing && !activity.isDestroyed)
-                adapter?.setNdefPushMessage(null, activity)
-            adapter = null
         }
     }
 
@@ -226,6 +209,7 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
         override fun onBindViewHolder(holder: ProfileViewHolder, position: Int) = holder.bind(profiles[position])
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileViewHolder = ProfileViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.layout_profile, parent, false))
+
         override fun getItemCount(): Int = profiles.size
         override fun getItemId(position: Int): Long = profiles[position].id
 
@@ -254,6 +238,7 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
             updated.add(first)
             notifyItemMoved(from, to)
         }
+
         fun commitMove() {
             updated.forEach { ProfileManager.updateProfile(it) }
             updated.clear()
@@ -263,12 +248,14 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
             profiles.removeAt(pos)
             notifyItemRemoved(pos)
         }
+
         fun undo(actions: List<Pair<Int, Profile>>) {
             for ((index, item) in actions) {
                 profiles.add(index, item)
                 notifyItemInserted(index)
             }
         }
+
         fun commit(actions: List<Pair<Int, Profile>>) {
             for ((_, item) in actions) ProfileManager.delProfile(item.id)
         }
@@ -277,12 +264,14 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
             val index = profiles.indexOfFirst { it.id == id }
             if (index >= 0) notifyItemChanged(index)
         }
+
         fun deepRefreshId(id: Long) {
             val index = profiles.indexOfFirst { it.id == id }
             if (index < 0) return
             profiles[index] = ProfileManager.getProfile(id)!!
             notifyItemChanged(index)
         }
+
         override fun onRemove(profileId: Long) {
             val index = profiles.indexOfFirst { it.id == profileId }
             if (index < 0) return
@@ -333,10 +322,11 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
         ProfileManager.listener = profilesAdapter
         undoManager = UndoSnackbarManager(activity as MainActivity, profilesAdapter::undo, profilesAdapter::commit)
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-        ItemTouchHelper.START or ItemTouchHelper.END) {
+                ItemTouchHelper.START or ItemTouchHelper.END) {
             override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int =
                     if (isProfileEditable((viewHolder as ProfileViewHolder).item.id))
                         super.getSwipeDirs(recyclerView, viewHolder) else 0
+
             override fun getDragDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int =
                     if (isEnabled) super.getDragDirs(recyclerView, viewHolder) else 0
 
@@ -345,11 +335,13 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
                 profilesAdapter.remove(index)
                 undoManager.remove(Pair(index, (viewHolder as ProfileViewHolder).item))
             }
+
             override fun onMove(recyclerView: RecyclerView,
                                 viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 profilesAdapter.move(viewHolder.adapterPosition, target.adapterPosition)
                 return true
             }
+
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
                 profilesAdapter.commitMove()
@@ -359,10 +351,6 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_scan_qr_code -> {
-                startActivity(Intent(context, ScannerActivity::class.java))
-                true
-            }
             R.id.action_import_clipboard -> {
                 try {
                     val profiles = Profile.findAllUrls(
@@ -378,22 +366,6 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
                     exc.printStackTrace()
                 }
                 (activity as MainActivity).snackbar().setText(R.string.action_import_err).show()
-                true
-            }
-            R.id.action_import_file -> {
-                startFilesForResult(Intent(Intent.ACTION_GET_CONTENT).apply {
-                    type = "application/*"
-                    putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/*", "text/*"))
-                }, REQUEST_IMPORT_PROFILES)
-                true
-            }
-            R.id.action_replace_file -> {
-                startFilesForResult(Intent(Intent.ACTION_GET_CONTENT).apply {
-                    type = "application/*"
-                    putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/*", "text/*"))
-                }, REQUEST_REPLACE_PROFILES)
                 true
             }
             R.id.action_manual_settings -> {
@@ -424,7 +396,9 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
         try {
             startActivityForResult(intent.addCategory(Intent.CATEGORY_OPENABLE), requestCode)
             return
-        } catch (_: ActivityNotFoundException) { } catch (_: SecurityException) { }
+        } catch (_: ActivityNotFoundException) {
+        } catch (_: SecurityException) {
+        }
         (activity as MainActivity).snackbar(getString(R.string.file_manager_missing)).show()
     }
 
@@ -472,6 +446,7 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
             profilesAdapter.refreshId(profileId)
         }
     }
+
     fun onTrafficPersisted(profileId: Long) {
         statsCache.remove(profileId)
         profilesAdapter.deepRefreshId(profileId)

@@ -1,17 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.nowtoapps.bluevpn"
-          tools:ignore="MissingLeanbackSupport">
-
-    <uses-permission android:name="android.permission.NFC" />
-    <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.nowtoapps.bluevpn"
+    tools:ignore="MissingLeanbackSupport">
 
     <uses-feature android:name="android.hardware.touchscreen"
-                  android:required="false"/>
-    <uses-feature android:name="android.hardware.nfc"
-                  android:required="false"/>
-    <uses-feature android:name="android.hardware.camera"
-                  android:required="false"/>
+        android:required="false"/>
 
     <application
         android:name=".App"
@@ -23,12 +16,7 @@
             android:theme="@style/Theme.Shadowsocks.Navigation"
             android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -39,10 +27,10 @@
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-                <data android:scheme="ss" />
+                <data android:scheme="ss"/>
             </intent-filter>
             <meta-data android:name="android.app.shortcuts"
-                       android:resource="@xml/shortcuts"/>
+                android:resource="@xml/shortcuts"/>
         </activity>
 
         <activity
@@ -65,16 +53,10 @@
             android:excludeFromRecents="true"
             android:launchMode="singleTask"/>
 
-        <activity
-            android:name=".ScannerActivity"
-            android:label="@string/add_profile_methods_scan_qr_code"
-            android:parentActivityName=".MainActivity"
-            android:excludeFromRecents="true"/>
-
         <activity android:name=".tasker.ConfigActivity"
-                  android:icon="@mipmap/ic_launcher">
+            android:icon="@mipmap/ic_launcher">
             <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING"/>
             </intent-filter>
         </activity>
 
@@ -87,24 +69,33 @@
             android:process=":bg"
             android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".HomeActivity"
+            android:theme="@style/AppTheme"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <service android:name=".bg.TileService" android:label="@string/quick_toggle"
-                 android:process=":bg"
-                 android:directBootAware="true"
-                 android:icon="@drawable/ic_service_active"
-                 android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:process=":bg"
+            android:directBootAware="true"
+            android:icon="@drawable/ic_service_active"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE" />
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
         </service>
 
         <receiver android:name=".tasker.ActionListener"
-                  android:process=":bg"
-                  android:directBootAware="true"
-                  tools:ignore="ExportedReceiver">
+            android:process=":bg"
+            android:directBootAware="true"
+            tools:ignore="ExportedReceiver">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING"/>
             </intent-filter>

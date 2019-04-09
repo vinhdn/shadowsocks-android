@@ -154,4 +154,6 @@
 <string name="action_replace_file">"从文件替换…"</string>
 <string name="off">"关"</string>
 <string name="proxied_apps_mode">"模式"</string>
+    <string name="connected">已连接</string>
+    <string name="tab_to_connect">Tab button to connect</string>
 </resources>

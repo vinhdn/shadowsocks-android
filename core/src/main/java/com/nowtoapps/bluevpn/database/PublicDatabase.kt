@@ -24,27 +24,20 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.nowtoapps.bluevpn.Core
-import com.nowtoapps.bluevpn.database.migration.RecreateSchemaMigration
 import com.nowtoapps.bluevpn.utils.Key
 
-@Database(entities = [KeyValuePair::class], version = 3)
+@Database(entities = [KeyValuePair::class], version = 1)
 abstract class PublicDatabase : RoomDatabase() {
     companion object {
         private val instance by lazy {
             Room.databaseBuilder(Core.deviceStorage, PublicDatabase::class.java, Key.DB_PUBLIC)
                     .allowMainThreadQueries()
-                    .addMigrations(
-                            Migration3
-                    )
                     .fallbackToDestructiveMigration()
                     .build()
         }
 
         val kvPairDao get() = instance.keyValuePairDao()
     }
-    abstract fun keyValuePairDao(): KeyValuePair.Dao
 
-    internal object Migration3 : RecreateSchemaMigration(2, 3, "KeyValuePair",
-            "(`key` TEXT NOT NULL, `valueType` INTEGER NOT NULL, `value` BLOB NOT NULL, PRIMARY KEY(`key`))",
-            "`key`, `valueType`, `value`")
+    abstract fun keyValuePairDao(): KeyValuePair.Dao
 }

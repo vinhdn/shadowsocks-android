@@ -2,4 +2,7 @@
 <resources>
     <color name="background_selected">@color/material_primary_100</color>
     <color name="background_stat">@color/material_primary_300</color>
+    <color name="colorPrimary">#00C3E6</color>
+    <color name="colorPrimaryDark">#0F53EB</color>
+    <color name="black">#000000</color>
 </resources>

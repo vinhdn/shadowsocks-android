@@ -45,7 +45,6 @@ object ProfileManager {
 
     @Throws(SQLException::class)
     fun createProfile(profile: Profile = Profile()): Profile {
-        profile.id = 0
         profile.userOrder = PrivateDatabase.profileDao.nextOrder() ?: 0
         profile.id = PrivateDatabase.profileDao.create(profile)
         listener?.onAdd(profile)
@@ -136,5 +135,10 @@ object ProfileManager {
     } catch (ex: SQLException) {
         printLog(ex)
         null
+    }
+
+    @Throws(IOException::class)
+    fun save(listData: List<Profile>) {
+        PrivateDatabase.profileDao.save(listData)
     }
 }

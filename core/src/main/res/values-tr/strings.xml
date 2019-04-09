@@ -144,4 +144,6 @@
 <string name="night_mode_auto">"Oto"</string>
 <string name="night_mode_on">"Açık"</string>
 <string name="night_mode_off">"Kapalı"</string>
+    <string name="connected">Bağlandı</string>
+    <string name="tab_to_connect">Tab button to connect</string>
 </resources>

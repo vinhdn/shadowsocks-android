@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">"شدوساکس"</string>
 <string name="remote_dns">"دی‌ان‌اس سرور"</string>
 <string name="connection_test_testing">"در حال آزمایش…"</string>
 <string name="connection_test_fail">"ارتباط با اینترنت فراهم نیست"</string>
@@ -120,4 +119,5 @@
 <string name="vpn_permission_denied">"مجوز برای ساخت وی‌پی‌ان فراهم نیست"</string>
 <string name="auto_connect_summary_v24">"شدوساکس را از ابتدا فعال کن. توصیه می‌شود که به جای این گزینه از گزینه always-on vpn استفاده شود"</string>
 <string name="action_import_file">"ورودی از فایل…"</string>
+    <string name="tab_to_connect">Tab button to connect</string>
 </resources>

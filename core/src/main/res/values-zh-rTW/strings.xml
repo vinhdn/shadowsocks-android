@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">"影梭"</string>
 <string name="quick_toggle">"切換"</string>
 <string name="remote_dns">"遠程 DNS"</string>
 <string name="stat_summary">"傳送: \t%3$s\t↑\t%1$s/s
@@ -141,4 +140,6 @@
 <string name="service_transproxy">"透明代理服務"</string>
 <string name="vpn_permission_denied">"没有權限創建 VPN 服務"</string>
 <string name="auto_connect_summary_v24">"允許 Shadowsocks 隨系統啟動，建議使用始終開啟的 VPN"</string>
+    <string name="connected">已連線</string>
+    <string name="tab_to_connect">Tab button to connect</string>
 </resources>

@@ -28,8 +28,8 @@ import android.util.Log
 import android.util.LongSparseArray
 import androidx.core.net.toUri
 import androidx.room.*
-import com.nowtoapps.bluevpn.plugin.PluginConfiguration
 import com.com.nowtoapps.bluevpn.plugin.PluginOptions
+import com.nowtoapps.bluevpn.plugin.PluginConfiguration
 import com.nowtoapps.bluevpn.preference.DataStore
 import com.nowtoapps.bluevpn.utils.Key
 import com.nowtoapps.bluevpn.utils.asIterable
@@ -43,15 +43,16 @@ import java.net.URI
 import java.net.URISyntaxException
 import java.util.*
 
+//ss://aes-256-cfb:1wEr3g5HJt6Ew2Rt@45.76.250.99/45.76.250.99:443
 @Entity
 @Parcelize
 data class Profile(
-        @PrimaryKey(autoGenerate = true)
+        @PrimaryKey
         var id: Long = 0,
         var name: String? = "",
-        var host: String = "198.199.101.152",
-        var remotePort: Int = 8388,
-        var password: String = "u1rRWTssNv0p",
+        var host: String = "45.76.250.99",
+        var remotePort: Int = 443,
+        var password: String = "1wEr3g5HJt6Ew2Rt",
         var method: String = "aes-256-cfb",
         var route: String = "all",
         var remoteDns: String = "dns.google",
@@ -67,6 +68,8 @@ data class Profile(
         var userOrder: Long = 0,
         var plugin: String? = null,
         var udpFallback: Long? = null,
+        var countryCode: String = "United States",
+        var countryName: String = "US",
 
         @Ignore // not persisted in db, only used by direct boot
         var dirty: Boolean = false
@@ -79,7 +82,8 @@ data class Profile(
         private val userInfoPattern = "^(.+?):(.*)$".toRegex()
         private val legacyPattern = "^(.+?):(.*)@(.+?):(\\d+?)$".toRegex()
 
-        fun findAllUrls(data: CharSequence?, feature: Profile? = null) = pattern.findAll(data ?: "").map {
+        fun findAllUrls(data: CharSequence?, feature: Profile? = null) = pattern.findAll(data
+                ?: "").map {
             val uri = it.value.toUri()
             try {
                 if (uri.userInfo == null) {
@@ -163,7 +167,8 @@ data class Profile(
                     json.optJSONObject("proxy_apps")?.also {
                         proxyApps = it.optBoolean("enabled", proxyApps)
                         bypass = it.optBoolean("bypass", bypass)
-                        individual = it.optJSONArray("android_list")?.asIterable()?.joinToString("\n") ?: individual
+                        individual = it.optJSONArray("android_list")?.asIterable()?.joinToString("\n")
+                                ?: individual
                     }
                     udpdns = json.optBoolean("udpdns", udpdns)
                     json.optJSONObject("udp_fallback")?.let { tryParse(it, true) }?.also { fallbackMap[this] = it }
@@ -180,6 +185,7 @@ data class Profile(
                     // ignore other types
                 }
             }
+
             fun finalize(create: (Profile) -> Unit) {
                 val profiles = ProfileManager.getAllProfiles() ?: emptyList()
                 for ((profile, fallback) in fallbackMap) {
@@ -196,6 +202,7 @@ data class Profile(
                 }
             }
         }
+
         fun parseJson(json: String, feature: Profile? = null, create: (Profile) -> Unit) = JsonParser(feature).run {
             process(JSONTokener(json).nextValue())
             for (profile in this) create(profile)
@@ -217,8 +224,11 @@ data class Profile(
         @Query("SELECT 1 FROM `Profile` LIMIT 1")
         fun isNotEmpty(): Boolean
 
-        @Insert
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
         fun create(value: Profile): Long
+
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        fun save(values: List<Profile>): Array<Long>
 
         @Update
         fun update(value: Profile): Int
@@ -256,6 +266,7 @@ data class Profile(
         if (!name.isNullOrEmpty()) builder.fragment(name)
         return builder.build()
     }
+
     override fun toString() = toUri().toString()
 
     fun toJson(profiles: LongSparseArray<Profile>? = null): JSONObject = JSONObject().apply {
@@ -302,11 +313,14 @@ data class Profile(
         DataStore.privateStore.putBoolean(Key.udpdns, udpdns)
         DataStore.privateStore.putBoolean(Key.ipv6, ipv6)
         DataStore.privateStore.putBoolean(Key.metered, metered)
+        DataStore.privateStore.putString(Key.countryCode, countryCode)
+        DataStore.privateStore.putString(Key.countryName, countryName)
         DataStore.individual = individual
         DataStore.plugin = plugin ?: ""
         DataStore.udpFallback = udpFallback
         DataStore.privateStore.remove(Key.dirty)
     }
+
     fun deserialize() {
         check(id == 0L || DataStore.editingId == id)
         DataStore.editingId = null
@@ -318,6 +332,8 @@ data class Profile(
         method = DataStore.privateStore.getString(Key.method) ?: ""
         route = DataStore.privateStore.getString(Key.route) ?: ""
         remoteDns = DataStore.privateStore.getString(Key.remoteDns) ?: ""
+        countryCode = DataStore.privateStore.getString(Key.countryCode) ?: ""
+        countryName = DataStore.privateStore.getString(Key.countryName) ?: ""
         proxyApps = DataStore.proxyApps
         bypass = DataStore.bypass
         udpdns = DataStore.privateStore.getBoolean(Key.udpdns, false)

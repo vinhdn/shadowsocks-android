@@ -23,22 +23,14 @@ package com.nowtoapps.bluevpn.database
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.nowtoapps.bluevpn.Core.app
-import com.nowtoapps.bluevpn.database.migration.RecreateSchemaMigration
 import com.nowtoapps.bluevpn.utils.Key
 
-@Database(entities = [Profile::class, KeyValuePair::class], version = 28)
+@Database(entities = [Profile::class, KeyValuePair::class], version = 1)
 abstract class PrivateDatabase : RoomDatabase() {
     companion object {
         private val instance by lazy {
             Room.databaseBuilder(app, PrivateDatabase::class.java, Key.DB_PROFILE)
-                    .addMigrations(
-                            Migration26,
-                            Migration27,
-                            Migration28
-                    )
                     .fallbackToDestructiveMigration()
                     .allowMainThreadQueries()
                     .build()
@@ -47,23 +39,7 @@ abstract class PrivateDatabase : RoomDatabase() {
         val profileDao get() = instance.profileDao()
         val kvPairDao get() = instance.keyValuePairDao()
     }
+
     abstract fun profileDao(): Profile.Dao
     abstract fun keyValuePairDao(): KeyValuePair.Dao
-
-    object Migration26 : RecreateSchemaMigration(25, 26, "Profile",
-            "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `host` TEXT NOT NULL, `remotePort` INTEGER NOT NULL, `password` TEXT NOT NULL, `method` TEXT NOT NULL, `route` TEXT NOT NULL, `remoteDns` TEXT NOT NULL, `proxyApps` INTEGER NOT NULL, `bypass` INTEGER NOT NULL, `udpdns` INTEGER NOT NULL, `ipv6` INTEGER NOT NULL, `individual` TEXT NOT NULL, `tx` INTEGER NOT NULL, `rx` INTEGER NOT NULL, `userOrder` INTEGER NOT NULL, `plugin` TEXT)",
-            "`id`, `name`, `host`, `remotePort`, `password`, `method`, `route`, `remoteDns`, `proxyApps`, `bypass`, `udpdns`, `ipv6`, `individual`, `tx`, `rx`, `userOrder`, `plugin`") {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            super.migrate(database)
-            PublicDatabase.Migration3.migrate(database)
-        }
-    }
-    object Migration27 : Migration(26, 27) {
-        override fun migrate(database: SupportSQLiteDatabase) =
-                database.execSQL("ALTER TABLE `Profile` ADD COLUMN `udpFallback` INTEGER")
-    }
-    object Migration28 : Migration(27, 28) {
-        override fun migrate(database: SupportSQLiteDatabase) =
-                database.execSQL("ALTER TABLE `Profile` ADD COLUMN `metered` INTEGER NOT NULL DEFAULT 0")
-    }
 }
