@@ -81,6 +81,8 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".ListCountryActivity"
+            android:theme="@style/AppTheme"/>
 
         <service android:name=".bg.TileService" android:label="@string/quick_toggle"
             android:process=":bg"

@@ -32,10 +32,12 @@ import android.net.Uri
 import android.os.Build
 import android.system.Os
 import android.system.OsConstants
+import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.preference.Preference
 import com.crashlytics.android.Crashlytics
+import com.nowtoapps.bluevpn.core.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -94,3 +96,18 @@ fun printLog(t: Throwable) {
 }
 
 fun Preference.remove() = parent!!.removePreference(this)
+
+fun logd(title: String, content: String) {
+    if (BuildConfig.DEBUG)
+        Log.d(title, content)
+}
+
+fun logi(title: String, content: String) {
+    if (BuildConfig.DEBUG)
+        Log.i(title, content)
+}
+
+fun loge(title: String, content: String) {
+    if (BuildConfig.DEBUG)
+        Log.e(title, content)
+}

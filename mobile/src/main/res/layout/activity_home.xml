@@ -82,6 +82,7 @@
         app:layout_constraintGuide_percent="0.70"/>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardCountry"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -93,17 +94,17 @@
         app:cardCornerRadius="25dp"
         android:elevation="5dp"
         android:layout_height="wrap_content">
-        <LinearLayout android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:orientation="horizontal">
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/tvCountryFlag"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/bg_button_connect"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivCountryFlag"
+                android:layout_width="35dp"
+                android:layout_height="35dp"/>
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvCountryName"
                 android:layout_width="0dp"
@@ -112,7 +113,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:text="United States"
+                android:text="Select server"
                 android:textColor="@color/black"
                 android:textSize="18sp"/>
             <androidx.appcompat.widget.AppCompatImageView

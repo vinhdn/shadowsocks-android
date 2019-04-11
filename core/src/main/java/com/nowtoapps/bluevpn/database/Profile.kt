@@ -59,7 +59,7 @@ data class Profile(
         var proxyApps: Boolean = false,
         var bypass: Boolean = false,
         var udpdns: Boolean = false,
-        var ipv6: Boolean = true,
+        var ipv6: Boolean = false,
         @TargetApi(28)
         var metered: Boolean = false,
         var individual: String = "",

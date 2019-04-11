@@ -1,8 +1,10 @@
 package com.nowtoapps.bluevpn.network
 
+import android.util.Log
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.Gson
 import com.nowtoapps.bluevpn.model.VpnResponse
+import com.nowtoapps.bluevpn.utils.logd
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -20,8 +22,10 @@ class ApiManager {
     }
 
     fun getVPNData(listener: (VpnResponse?) -> Unit) {
+        logd("loadData", "Get VPN Data")
         "https://pastebin.com/raw/dgfwctB2".httpGet().responseString { _, _, result ->
             val (data, error) = result
+            logd("response", data ?: error?.message ?: "Unknow")
             GlobalScope.launch(Dispatchers.Main) {
                 if (error != null) {
                     listener(null)
@@ -34,8 +38,10 @@ class ApiManager {
     }
 
     fun getApiVersion(listener: (Int) -> Unit) {
+        logd("loadData", "Get Version")
         "https://pastebin.com/raw/0gKtNPn0".httpGet().responseString { _, _, result ->
             val (data, error) = result
+            logd("response", data ?: error?.message ?: "Unknow")
             GlobalScope.launch(Dispatchers.Main) {
                 if (error != null) {
                     listener(1)

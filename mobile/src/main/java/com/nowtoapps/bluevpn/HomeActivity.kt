@@ -14,7 +14,12 @@ import android.util.LongSparseArray
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.getSystemService
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.get
 import androidx.preference.PreferenceDataStore
+import com.bumptech.glide.Glide
 import com.crashlytics.android.Crashlytics
 import com.nowtoapps.bluevpn.aidl.IShadowsocksService
 import com.nowtoapps.bluevpn.aidl.ShadowsocksConnection
@@ -22,6 +27,7 @@ import com.nowtoapps.bluevpn.aidl.TrafficStats
 import com.nowtoapps.bluevpn.bg.BaseService
 import com.nowtoapps.bluevpn.database.Profile
 import com.nowtoapps.bluevpn.database.ProfileManager
+import com.nowtoapps.bluevpn.net.HttpsTest
 import com.nowtoapps.bluevpn.network.ApiManager
 import com.nowtoapps.bluevpn.preference.DataStore
 import com.nowtoapps.bluevpn.preference.OnPreferenceDataStoreChangeListener
@@ -36,6 +42,7 @@ class HomeActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
     companion object {
         private const val TAG = "ShadowsocksMainActivity"
         private const val REQUEST_CONNECT = 1
+        const val imagePath = "file:///android_asset/flags/%s.png"
 
         var stateListener: ((BaseService.State) -> Unit)? = null
     }
@@ -46,6 +53,8 @@ class HomeActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
     private val isEnabled get() = state.let { it.canStop || it == BaseService.State.Stopped }
 
     var state = BaseService.State.Idle
+    private lateinit var tester : HttpsTest
+
     override fun stateChanged(state: BaseService.State, profileName: String?, msg: String?) =
             changeState(state, msg, true)
 
@@ -77,10 +86,7 @@ class HomeActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
                 btnPower.setImageResource(R.drawable.btn_connect)
             }
             BaseService.State.Connected -> {
-                tvStatus.text = getString(R.string.connected)
-                tvStatus.visibility = View.VISIBLE
-                tvNotice.text = "Tap button to disconnect"
-                btnPower.setImageResource(R.drawable.btn_disconnect)
+                tester.testConnection()
             }
             BaseService.State.Stopping -> {
                 tvStatus.visibility = View.GONE
@@ -104,6 +110,12 @@ class HomeActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when {
+            requestCode == 123 -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    getCurrentSelectVPN()
+                    if (state.canStop) Core.reloadService()
+                }
+            }
             requestCode != REQUEST_CONNECT -> super.onActivityResult(requestCode, resultCode, data)
             resultCode == Activity.RESULT_OK -> Core.startService()
             else -> {
@@ -115,13 +127,31 @@ class HomeActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        tester = ViewModelProviders.of(this).get()
         changeState(BaseService.State.Idle) // reset everything to init state
         connection.connect(this, this)
         DataStore.publicStore.registerChangeListener(this)
         ProfileManager.ensureNotEmpty()
         fab.setOnClickListener { toggle() }
+        cardCountry.setOnClickListener {
+            val intent = Intent(this, ListCountryActivity::class.java)
+            startActivityForResult(intent, 123)
+        }
         getCurrentSelectVPN()
         getNewData()
+        tester.status.observe(this, Observer { status ->
+            when (status) {
+                is HttpsTest.Status.Success -> {
+                    tvStatus.text = getString(R.string.connected)
+                    tvStatus.visibility = View.VISIBLE
+                    tvNotice.text = "Tap button to disconnect"
+                    btnPower.setImageResource(R.drawable.btn_disconnect)
+                }
+                is HttpsTest.Status.Error -> {
+                    Core.stopService()
+                }
+            }
+        })
     }
 
     override fun onStart() {
@@ -190,6 +220,8 @@ class HomeActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
     private fun getCurrentSelectVPN() {
         val profile = ProfileManager.getProfile(DataStore.profileId) ?: return
         tvCountryName.text = profile.countryName
+        Glide.with(this)
+                .load(String.format(imagePath, profile.countryCode.toLowerCase())).into(ivCountryFlag)
     }
 
     private fun getNewData() {
